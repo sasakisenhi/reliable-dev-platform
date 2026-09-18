@@ -6,18 +6,23 @@
 
 Platform の振る舞いを追加または変更する Feature は、技術を選ぶ前に Problem、反証可能な Hypothesis、実装手段から独立した Requirement を定義しなければならない（MUST）。
 採用する仕組みは、それが満たす Requirement または明示的な Learning Objective へ対応付けなければならない（MUST）。
-Learning Objective には、説明または実証できる完了条件を定めなければいけない（MUST）。
+Learning Objective には、説明または実証できる完了条件を定めなければならない（MUST）。
 特定の機能やツールを使うことだけを採用理由にしてはならない（MUST NOT）。
 
 Rationale: 問題と要求から技術を選ぶことで、Platform の価値と学習成果を検証可能にする。
 
-### II. Minimal Complexity
+### II. Minimal Complexity and Build vs. Adopt
 
 MVP は、現在の Hypothesis と Requirement を検証するために必要な最小構成としなければならない（MUST）。
-ツール、抽象化、サービス、アーキテクチャ層を追加する場合は、対応する Requirement または Learning Objective と、より単純な選択肢では不十分な理由の両方を示さなければならない（MUST）。
+Platform Capability を独自実装する前に、その Requirement と Quality Condition を満たし得る既存の標準機能、OSS、サービスを確認しなければならない（MUST）。
+既存の解決策が Requirement と Quality Condition を十分に満たす場合、明示的な Learning Objective または検証可能な改善 Hypothesis がない限り、同等 Capability を独自実装してはならない（MUST NOT）。
+独自実装を選択する場合は、既存またはより単純な解決策では不十分な理由を `plan.md` または `research.md` に記録しなければならない（MUST）。
+Learning Objective のための再実装は学習目的として明示し、Production Capability に必要な独自実装として扱ってはならない（MUST NOT）。
+差別化すること自体を、採用または独自実装の理由にしてはならない（MUST NOT）。
 将来必要になる可能性だけを理由に、複雑性を追加してはならない（MUST NOT）。
 
-Rationale: 最小構成は因果関係を明確にし、変更・運用・学習の負担を抑える。
+Rationale: Commodity Capability の再発明を避け、既存の解決策を積極的に活用することで、実装・運用・学習の負担を抑え、本 Platform が解決すべき Problem と検証可能な価値に注力する。
+
 
 ### III. Reduce Developer Cognitive Load
 
@@ -55,9 +60,9 @@ Feature 固有の Requirement、Acceptance Criteria、技術選定、検証手�
 
 ## Sources of Detail
 
-- `doc/product-context.md`: 問題領域、全体仮説、Personas、Scope
+- `docs/product-context.md`: 問題領域、全体仮説、Personas、Scope
 - 各 `spec.md`: Feature の目的、Requirement、Acceptance Criteria
-- 各 `plan.md`: 技術選定、設計判断、品質の検証方針
+- 各 `plan.md` / `research.md`: 既存解決策の調査、採否、技術選定、差異と改善 Hypothesis、設計判断、品質の検証方針
 - 各 `tasks.md`: 実装・検証作業と依存関係
 
 ## Governance
@@ -69,4 +74,4 @@ Maintainer は default branch の品質に最終的な責任を持つ人間を�
 憲章の改定には、変更理由、影響、必要な移行方針、Maintainer の承認を必要とする。
 Version は Semantic Versioning に従い、原則の削除・再定義または義務の弱化を MAJOR、原則の追加、または義務・ガイダンスの実質的な拡張を MINOR、意味を変えない明確化を PATCH とする。改定時は Version と Last Amended を更新する。
 
-**Version**: 2.0.0 | **Ratified**: 2026-09-17 | **Last Amended**: 2026-09-17
+**Version**: 2.1.0 | **Ratified**: 2026-09-17 | **Last Amended**: 2026-09-18
