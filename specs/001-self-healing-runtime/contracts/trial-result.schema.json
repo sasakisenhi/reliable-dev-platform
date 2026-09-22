@@ -1,0 +1,347 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://reliable-dev-platform.local/schemas/trial-result.schema.json",
+  "title": "Self-Healing Trial Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "runId",
+    "attemptId",
+    "applicationContractDigest",
+    "verificationProfileDigest",
+    "toolVersions",
+    "initialObservation",
+    "selectedInstance",
+    "lossRequestAcceptedAt",
+    "firstAbsentObservedAt",
+    "deadlineAt",
+    "completedAt",
+    "elapsedMilliseconds",
+    "recoveryObservations",
+    "developerRecoveryInputCount",
+    "developerRecoveryInterventionObserved",
+    "auditEvidenceRefs",
+    "additionalFailure",
+    "attributionPredicate",
+    "verdict",
+    "qualityEvaluationIncluded",
+    "rerunRequired",
+    "reasons",
+    "evidenceRefs"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "runId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "attemptId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "applicationContractDigest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "verificationProfileDigest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "toolVersions": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "initialObservation": {
+      "$ref": "#/$defs/stateObservation"
+    },
+    "selectedInstance": {
+      "oneOf": [
+        { "$ref": "#/$defs/podInstance" },
+        { "type": "null" }
+      ]
+    },
+    "lossRequestAcceptedAt": {
+      "$ref": "#/$defs/nullableTimestamp"
+    },
+    "firstAbsentObservedAt": {
+      "$ref": "#/$defs/nullableTimestamp"
+    },
+    "deadlineAt": {
+      "$ref": "#/$defs/nullableTimestamp"
+    },
+    "completedAt": {
+      "$ref": "#/$defs/nullableTimestamp"
+    },
+    "elapsedMilliseconds": {
+      "type": ["integer", "null"],
+      "minimum": 0
+    },
+    "recoveryObservations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/recoveryObservation"
+      }
+    },
+    "developerRecoveryInputCount": {
+      "const": 0,
+      "description": "The CLI exposes no per-attempt recovery input."
+    },
+    "developerRecoveryInterventionObserved": {
+      "type": "boolean"
+    },
+    "auditEvidenceRefs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "additionalFailure": {
+      "$ref": "#/$defs/additionalFailure"
+    },
+    "attributionPredicate": {
+      "enum": [
+        "RECOVERY_INTERVENTION",
+        "EXTERNAL",
+        "PLATFORM",
+        "NONE",
+        "UNKNOWN",
+        null
+      ]
+    },
+    "verdict": {
+      "enum": ["PASS", "FAIL", "INVALID"]
+    },
+    "qualityEvaluationIncluded": {
+      "type": "boolean"
+    },
+    "rerunRequired": {
+      "type": "boolean"
+    },
+    "reasons": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/verdictReason"
+      }
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "verdict": { "const": "PASS" } },
+        "required": ["verdict"]
+      },
+      "then": {
+        "properties": {
+          "qualityEvaluationIncluded": { "const": true },
+          "rerunRequired": { "const": false },
+          "reasons": { "maxItems": 0 },
+          "firstAbsentObservedAt": { "type": "string", "format": "date-time" },
+          "completedAt": { "type": "string", "format": "date-time" },
+          "elapsedMilliseconds": { "type": "integer", "minimum": 0, "maximum": 120000 },
+          "recoveryObservations": { "minItems": 1 },
+          "developerRecoveryInterventionObserved": { "const": false },
+          "attributionPredicate": { "const": "NONE" },
+          "additionalFailure": {
+            "properties": {
+              "observed": { "const": false },
+              "attribution": { "const": "NONE" }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "verdict": { "const": "FAIL" } },
+        "required": ["verdict"]
+      },
+      "then": {
+        "properties": {
+          "qualityEvaluationIncluded": { "const": true },
+          "rerunRequired": { "const": false },
+          "reasons": { "minItems": 1 }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "verdict": { "const": "INVALID" } },
+        "required": ["verdict"]
+      },
+      "then": {
+        "properties": {
+          "qualityEvaluationIncluded": { "const": false },
+          "rerunRequired": { "const": true },
+          "reasons": { "minItems": 1 }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "firstAbsentObservedAt": { "type": "string" }
+        },
+        "required": ["firstAbsentObservedAt"]
+      },
+      "then": {
+        "properties": {
+          "deadlineAt": { "type": "string", "format": "date-time" },
+          "elapsedMilliseconds": { "type": "integer", "minimum": 0 },
+          "recoveryObservations": { "minItems": 1 }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "nullableTimestamp": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "podInstance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "uid", "ready", "deletionTimestamp", "phase", "ownerUid"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "uid": { "type": "string", "minLength": 1 },
+        "ready": { "type": "boolean" },
+        "deletionTimestamp": { "$ref": "#/$defs/nullableTimestamp" },
+        "phase": { "type": "string", "minLength": 1 },
+        "ownerUid": { "type": "string", "minLength": 1 }
+      }
+    },
+    "operationObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "startedAt",
+        "completedAt",
+        "durationMilliseconds",
+        "exitCode",
+        "success",
+        "stdoutRef",
+        "stderrRef",
+        "timedOut"
+      ],
+      "properties": {
+        "startedAt": { "type": "string", "format": "date-time" },
+        "completedAt": { "type": "string", "format": "date-time" },
+        "durationMilliseconds": { "type": "integer", "minimum": 0 },
+        "exitCode": { "type": ["integer", "null"] },
+        "success": { "type": "boolean" },
+        "stdoutRef": { "type": ["string", "null"] },
+        "stderrRef": { "type": ["string", "null"] },
+        "timedOut": { "type": "boolean" }
+      }
+    },
+    "stateObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observedAt",
+        "expectedInstances",
+        "currentInstances",
+        "activePods",
+        "operation"
+      ],
+      "properties": {
+        "observedAt": { "type": "string", "format": "date-time" },
+        "expectedInstances": { "type": "integer", "minimum": 1 },
+        "currentInstances": { "type": "integer", "minimum": 0 },
+        "activePods": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/podInstance" }
+        },
+        "operation": { "$ref": "#/$defs/operationObservation" }
+      }
+    },
+    "recoveryObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sequence",
+        "observedAt",
+        "elapsedMilliseconds",
+        "activePods",
+        "currentInstances",
+        "expectedInstancesMatched",
+        "operation",
+        "recoveryComplete"
+      ],
+      "properties": {
+        "sequence": { "type": "integer", "minimum": 0 },
+        "observedAt": { "type": "string", "format": "date-time" },
+        "elapsedMilliseconds": { "type": "integer", "minimum": 0 },
+        "activePods": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/podInstance" }
+        },
+        "currentInstances": { "type": "integer", "minimum": 0 },
+        "expectedInstancesMatched": { "type": "boolean" },
+        "operation": { "$ref": "#/$defs/operationObservation" },
+        "recoveryComplete": { "type": "boolean" }
+      }
+    },
+    "additionalFailure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["observed", "observedAt", "affectedUid", "attribution", "details", "evidenceRefs"],
+      "properties": {
+        "observed": { "type": "boolean" },
+        "observedAt": { "$ref": "#/$defs/nullableTimestamp" },
+        "affectedUid": { "type": ["string", "null"] },
+        "attribution": { "enum": ["NONE", "PLATFORM", "EXTERNAL", "UNKNOWN"] },
+        "details": { "type": ["string", "null"] },
+        "evidenceRefs": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "verdictReason": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "requirement", "message"],
+      "properties": {
+        "code": {
+          "enum": [
+            "INITIAL_CONDITION_UNMET",
+            "LOSS_UNCONFIRMED",
+            "EXTERNAL_ADDITIONAL_FAILURE",
+            "UNKNOWN_ADDITIONAL_FAILURE",
+            "PLATFORM_ADDITIONAL_FAILURE",
+            "DEVELOPER_RECOVERY_INTERVENTION",
+            "RECOVERY_DEADLINE_EXCEEDED",
+            "EXPECTED_COUNT_NOT_RECOVERED",
+            "REPRESENTATIVE_OPERATION_UNAVAILABLE"
+          ]
+        },
+        "requirement": {
+          "type": "string",
+          "pattern": "^FR-[0-9]{3}$"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

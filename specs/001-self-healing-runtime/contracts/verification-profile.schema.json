@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://reliable-dev-platform.local/schemas/verification-profile.schema.json",
+  "title": "Self-Healing Verification Profile",
+  "description": "Platform-QA-owned mapping from an application contract to a Kubernetes workload.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "kubeContext",
+    "namespace",
+    "deploymentName",
+    "recoveryThresholdSeconds",
+    "lossObservationTimeoutSeconds",
+    "pollIntervalMilliseconds",
+    "artifactsDirectory",
+    "qaActorUsername",
+    "qaKubeconfigPath",
+    "auditLogPath"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "kubeContext": {
+      "type": "string",
+      "minLength": 1
+    },
+    "namespace": {
+      "type": "string",
+      "minLength": 1
+    },
+    "deploymentName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "recoveryThresholdSeconds": {
+      "const": 120
+    },
+    "lossObservationTimeoutSeconds": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Harness guard before the quality timer starts; expiry yields LOSS_UNCONFIRMED/INVALID."
+    },
+    "pollIntervalMilliseconds": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "artifactsDirectory": {
+      "type": "string",
+      "minLength": 1
+    },
+    "qaActorUsername": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Dedicated Platform QA ServiceAccount username expected in Kubernetes audit events."
+    },
+    "qaKubeconfigPath": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Host path to the dedicated short-lived Platform QA kubeconfig generated before the attempt window."
+    },
+    "auditLogPath": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Host path to the JSON Lines audit log mounted from the kind control-plane node."
+    }
+  }
+}
