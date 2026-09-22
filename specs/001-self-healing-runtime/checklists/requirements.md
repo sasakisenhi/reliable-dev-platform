@@ -31,7 +31,9 @@
 
 ## Notes
 
-- FR-004 の復旧期限は、MVP の暫定的な Acceptance Threshold として120秒に確定した。
-- 120秒は本番品質の SLO または恒久的な Platform Requirement ではなく、実測結果の収集後に必要に応じて見直す。
+- 2026-09-22 に `ROADMAP.md` R1 の範囲へ縮小した仕様を再検証し、全項目が合格した。
+- 120秒の開始点は、選択した個体が稼働中の実行インスタンス集合から外れたことの初回観測である。
+- 復旧完了には、期待実行数の一致と代表的な利用操作の成功が同時に必要である。
+- Feature 固有の自動 E2E 検証だけを残し、再利用可能な Platform E2E、汎用的な証拠、および障害原因の帰属は R4 へ延期した。
 - MVP の期待実行数3は検証入力であり、Platform の固定 Requirement ではない。
 - Items marked incomplete require spec updates before `$speckit-clarify` or `$speckit-plan`.
