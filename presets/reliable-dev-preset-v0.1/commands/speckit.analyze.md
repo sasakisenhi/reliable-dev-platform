@@ -32,10 +32,10 @@ contradictory examples, or conflicting responsibility boundaries.
 Flag cases where an explicitly unverified assumption has silently become a downstream fact
 or mechanism dependency without validation or acknowledgement.
 
-### Upstream Correction
+### Upstream-Origin Findings
 
-When a downstream inconsistency originates in an upstream artifact, identify the canonical
-upstream owner that requires correction rather than recommending a downstream-only patch.
+When a downstream inconsistency originates upstream, identify its canonical upstream owner
+in the finding.
 
 ### Semantic Staleness
 

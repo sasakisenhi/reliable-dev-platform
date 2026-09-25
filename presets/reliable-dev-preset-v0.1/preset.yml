@@ -39,13 +39,13 @@ provides:
     - type: "command"
       name: "speckit.implement"
       file: "commands/speckit.implement.md"
-      description: "Require evidence-based completion and correction at the canonical upstream owner."
+      description: "Require evidence-based completion and controlled handling of upstream-origin issues."
       strategy: "append"
 
     - type: "command"
       name: "speckit.converge"
       file: "commands/speckit.converge.md"
-      description: "Prevent convergence from manufacturing work around invalid or stale upstream intent."
+      description: "Prevent convergence from manufacturing work around invalid upstream intent or missing evidence."
       strategy: "append"
 
 tags:

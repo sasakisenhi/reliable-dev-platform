@@ -20,8 +20,9 @@ preserve:
 
 ### Evidence Semantics
 
-When an acceptance condition depends on observation or attribution, make the evidence
-source identifiable.
+When an acceptance condition depends on observation or attribution, make the observable
+evidence or responsible observer identifiable without prescribing an implementation
+mechanism.
 
 When evaluation can legitimately be inconclusive, do not coerce the result into PASS or
 FAIL. Preserve an explicit state such as UNKNOWN, INVALID, or UNAVAILABLE where

@@ -1,16 +1,12 @@
 ## Reliable Development Implementation Additions
 
-### Upstream Correction
+### Upstream-Origin Findings
 
-Do not reinterpret or weaken an approved requirement, assumption, feature boundary, or
-significant plan decision merely to make implementation or tests pass.
+If implementation exposes an upstream contradiction, stop downstream work for that issue
+and identify the canonical upstream owner.
 
-If implementation reveals that upstream intent is invalid, contradictory, or stale:
-
-1. identify the canonical upstream owner;
-2. report the contradiction;
-3. require correction of that upstream artifact;
-4. revalidate affected downstream artifacts before treating the issue as resolved.
+Resume only after the upstream correction is reflected and affected downstream artifacts
+have been revalidated.
 
 ### Evidence-Based Completion
 
