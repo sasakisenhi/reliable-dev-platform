@@ -1,6 +1,6 @@
 # Implementation Plan: Self-Healing Runtime
 
-**Branch**: `001-self-healing` | **Date**: 2026-09-22 | **Spec**: [spec.md](./spec.md)
+**Branch**: `001-self-healing-runtime` | **Date**: 2026-09-22 | **Spec**: [spec.md](./spec.md)
 
 **Input**: Feature specification from `/specs/001-self-healing-runtime/spec.md`
 
@@ -50,7 +50,7 @@ Gate violation はない。
 | Kubernetes fixture | MVP の Deployment と Service を宣言する。Deployment の `.spec.replicas` と `.spec.selector` を E2E input の source of truth とする |
 | Kubernetes controllers | [research.md §1](./research.md#1-recovery-mechanism-kubernetes-deployment-reconciliation) で選定した標準 reconciliation を実行する |
 | E2E script | cluster lifecycle、fixture setup、precheck、loss injection、bounded observation、outcome、diagnostics、cleanup を順に制御する |
-| Make target | `make test-self-healing` を唯一の利用者向け entrypoint として E2E script を起動する |
+| Make target | `make test-self-healing` を acceptance scenario の primary entrypoint として E2E script を起動する。 |
 
 Pod identity、`RunningInstanceSet`、loss injection、representative operation、timer と completion の正式な技術 semantics は [research.md §§2–6](./research.md) を参照する。plan ではそれらを再定義しない。
 

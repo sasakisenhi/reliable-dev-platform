@@ -90,13 +90,14 @@
 - https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster-services/
 - https://kubernetes.io/docs/concepts/cluster-administration/proxies/
 - https://kubernetes.io/docs/reference/kubectl/generated/kubectl_port-forward/
-- https://github.com/kubernetes/kubernetes/tree/master/test/images/agnhost
+- https://github.com/kubernetes/kubernetes/blob/v1.37.0/test/images/agnhost/VERSION
+- https://github.com/kubernetes/kubernetes/blob/v1.37.0/test/images/agnhost/serve-hostname/serve_hostname.go
 
 ## 6. Loss observation and recovery deadline
 
-**Decision**: delete request 後60秒の scenario guard 内で、選択 UID が `RunningInstanceSet` から最初に外れた観測を待つ。その観測時の uptime を `loss_observed_at` とし、120秒 timer を開始する。delete request 時刻、Pod object の完全削除、総実行数の減少は timer origin にしない。
+**Decision**: delete request 後60秒の scenario guard 内で、選択 UID が `RunningInstanceSet` から最初に外れた観測を待つ。その観測時の uptime を 120秒 timer を開始する。delete request 時刻、Pod object の完全削除、総実行数の減少は timer origin にしない。
 
-loss observation 後は bounded observation cycle を繰り返す。同一 cycle 内で次のすべてが成立し、cycle 完了時の elapsed time が120,000ms以下なら recovery completion とする。
+loss observation 後は bounded observation cycle を繰り返す。同一 cycle 内で、実行数が期待実行数と一致し、代表操作が成功し、選択 UID が不在であることを確認する。cycle 完了時の elapsed time が120,000ms以下なら recovery completion とする。
 
 - `count == expected_count`
 - representative operation success

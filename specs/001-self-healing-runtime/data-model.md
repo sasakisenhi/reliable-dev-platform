@@ -15,6 +15,7 @@
 | `lossObservationTimeoutSeconds` | integer | `60`。acceptance threshold には含めない |
 | `pollIntervalSeconds` | integer | 正数 |
 | `requestTimeoutSeconds` | integer | 正数。単一 request が observation boundary を阻害しない値 |
+| `serviceName` | string | representative operation の対象 Service を一意に指定 |
 
 `podSelector` と `expectedInstances` を E2E 側の別定義で上書きしてはならない。
 
@@ -35,8 +36,8 @@
 
 | Field | Type | Invariant |
 |---|---|---|
-| `runningInstanceUids` | set&lt;string&gt; | 要素数が `expectedInstances` と一致 |
-| `operationSucceeded` | boolean | representative operation result |
+| `runningInstanceUids` | set&lt;string&gt; | 同一 precheck cycle の Pod snapshot から算出 |
+| `operationSucceeded` | boolean | 同一 precheck cycle の representative operation result |
 
 baseline predicate:
 
@@ -94,8 +95,8 @@ recoveryComplete =
 ```text
 VerificationFixture
   ├── defines expectedInstances and observation limits
-  ├── selects ExecutionInstance values
-  └── supplies representative operation input
+  ├── scopes observed ExecutionInstance values
+  └── supplies representative operation target
 
 BaselineObservation
   └── selects one LossTarget

@@ -11,7 +11,7 @@
 - kubectl v1.37.0
 - Make
 
-kind と Kubernetes node image を含む完全な version set は [research.md §7](./research.md#7-reproducible-environment-and-version-pinning) に固定され、`platform/kubernetes/self-healing/kind.yaml` から使用される。
+完全な version set は [research.md §7](./research.md#7-reproducible-environment-and-version-pinning) に固定する。Kubernetes node image は`platform/kubernetes/self-healing/kind.yaml` に反映する。
 
 ## Validate the E2E script
 
@@ -57,7 +57,7 @@ recovery complete: instances=<expected-count> operation=success elapsed=<0..1200
 |---|---|
 | `SETUP` | 必須 tool、cluster、fixture、または対象 resource を準備できない |
 | `PRECHECK` | 正常な初期状態を確認できない |
-| `LOSS_INJECTION` | loss target の選択または単一 loss request を完了できない |
+| `LOSS_INJECTION` | 選択した loss target への単一 loss request を完了できない |
 | `LOSS_OBSERVATION` | scenario guard 内に選択 instance の喪失を確認できない |
 | `RECOVERY_DEADLINE` | acceptance deadline 内に recovery completion を確認できない |
 
