@@ -1,98 +1,57 @@
-## Reliable Development Planning Rules
-
-Apply the following additional rules during technical planning.
+## Reliable Development Planning Additions
 
 ### Repository Grounding
 
-Before proposing implementation structure or significant mechanisms:
+Before selecting significant mechanisms or implementation structure:
 
-- inspect the existing repository structure relevant to the feature;
-- identify existing modules, abstractions, interfaces, conventions, dependencies, tests, and architectural patterns;
-- verify that proposed file paths and integration points correspond to the actual repository where possible.
+- inspect the repository areas relevant to the feature;
+- identify existing modules, abstractions, interfaces, conventions, dependencies, tests,
+  and architectural patterns;
+- verify proposed integration points and file paths against the actual repository where
+  possible.
 
 Prefer extending an established repository pattern over introducing a parallel abstraction.
 
-### Requirement → Mechanism Traceability
+### Significant Decision Traceability
 
-Every significant technical mechanism or architectural decision MUST be justified by at least one:
+For each significant technical decision, preserve the relationship to the functional
+requirement, success criterion, quality condition, or explicit constraint that justifies it.
 
-- functional requirement;
-- quality attribute;
-- explicit constraint;
-- verified environmental requirement.
+Use stable identifiers such as `FR-###` or `SC-###` where they exist.
 
-For significant decisions, record the relevant requirement or constraint identifiers using an `Implements:` relationship where identifiers exist.
-
-Do not select a mechanism merely because it is conventional for the technology being used.
-
-### Minimum Necessary Mechanism
-
-Prefer, in order:
-
-1. an existing capability already present in the repository;
-2. a standard capability of the platform or framework;
-3. a mature existing dependency already justified by the project;
-4. a new dependency;
-5. custom infrastructure or abstraction.
-
-Moving downward in this list requires an actual requirement or constraint that the simpler option cannot satisfy.
-
-Do not introduce custom infrastructure for hypothetical future needs.
+Do not create decision records for routine local implementation choices. Reuse the existing
+plan or research structure instead of duplicating rationale in a new section when an
+appropriate owner already exists.
 
 ### State Semantics
 
-Do not conflate:
+Where the domain distinguishes them, do not conflate:
 
 - normative or desired state;
 - raw or observed current state;
-- interpretation or derived state;
-- the action taken to reconcile or respond to the difference.
+- interpreted or derived state;
+- the action taken in response to the difference.
 
-Use terminology appropriate to the domain, but preserve these semantic boundaries where they exist.
+Use domain-appropriate terminology while preserving those semantic boundaries.
 
-### Significant Decisions Only
+### Material Environment Assumptions
 
-Record decision rationale only when the choice materially affects one or more of:
-
-- architecture;
-- quality attributes;
-- external interfaces;
-- dependencies;
-- operational behavior;
-- future constraints;
-- reversibility or migration cost.
-
-Do not turn local implementation details into architecture decisions.
-
-### Environment and Runtime Assumptions
-
-Make explicit external assumptions that materially affect reproducibility or correctness, including where relevant:
-
-- runtime versions;
-- platform versions;
-- schema or protocol versions;
-- dependency versions;
-- infrastructure capabilities;
-- external service guarantees.
+Make external assumptions explicit when they materially affect reproducibility or
+correctness, including relevant runtime, platform, protocol, schema, dependency, or
+infrastructure capabilities.
 
 ### Failure Responsibility Boundaries
 
-For recovery-, retry-, reconciliation-, fallback-, or degraded-mode behavior:
+For recovery, retry, reconciliation, fallback, or degraded-mode behavior, identify:
 
-- identify which component detects the failure;
-- identify which component is responsible for responding;
-- identify which failure modes are intentionally not handled;
-- avoid overlapping recovery mechanisms unless their interaction is explicitly designed.
+- which component detects the condition;
+- which component is responsible for responding;
+- materially relevant failure modes that are intentionally not handled.
 
-### Human Review Candidates
+Avoid overlapping recovery mechanisms unless their interaction is intentionally designed.
 
-Flag a decision for human review when it is materially:
+### Review-Sensitive Decisions
 
-- difficult to reverse;
-- high blast-radius;
-- security/privacy sensitive;
-- operationally expensive;
-- strongly constraining to downstream design;
-- introducing a major new platform, persistence mechanism, controller, or infrastructure dependency.
-
-Do not block routine reversible decisions unnecessarily.
+Explicitly flag significant decisions for the existing plan review gate when they are
+materially difficult to reverse, high blast-radius, security/privacy sensitive,
+operationally expensive, or strongly constraining to downstream design.

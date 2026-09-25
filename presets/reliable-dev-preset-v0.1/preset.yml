@@ -4,66 +4,48 @@ preset:
   id: "reliable-dev"
   name: "Reliable Development"
   version: "0.1.0"
-  description: "Traceability, scope discipline, failure verification, evidence, and upstream-correction rules for Spec Kit."
+  description: "Thin Spec Kit additions for traceability, atomic work, evidence-based completion, and upstream correction."
   author: "local"
 
 requires:
-  speckit_version: ">=0.6.0"
+  speckit_version: ">=1.0.7"
 
 provides:
   templates:
     - type: "command"
       name: "speckit.specify"
       file: "commands/speckit.specify.md"
-      description: "Add reliable specification rules"
+      description: "Strengthen requirement atomicity, assumption integrity, and evidence semantics."
       strategy: "append"
 
     - type: "command"
       name: "speckit.plan"
       file: "commands/speckit.plan.md"
-      description: "Add traceable and repository-grounded planning rules"
+      description: "Ground planning in the repository and preserve decision traceability and responsibility boundaries."
       strategy: "append"
 
     - type: "command"
       name: "speckit.tasks"
       file: "commands/speckit.tasks.md"
-      description: "Add atomic and verification-oriented task generation rules"
+      description: "Strengthen task atomicity, verification, failure-path work, and traceability."
       strategy: "append"
 
     - type: "command"
       name: "speckit.analyze"
       file: "commands/speckit.analyze.md"
-      description: "Add end-to-end traceability and evidence analysis"
+      description: "Extend analysis through verification evidence, assumptions, contract consistency, and staleness."
       strategy: "append"
 
     - type: "command"
       name: "speckit.implement"
       file: "commands/speckit.implement.md"
-      description: "Add evidence-based completion and upstream-authority rules"
+      description: "Require evidence-based completion and correction at the canonical upstream owner."
       strategy: "append"
 
     - type: "command"
       name: "speckit.converge"
       file: "commands/speckit.converge.md"
-      description: "Add convergence and upstream-correction rules"
-      strategy: "append"
-
-    - type: "template"
-      name: "spec-template"
-      file: "templates/spec-addendum.md"
-      description: "Add assumptions, failure scope, and evidence semantics"
-      strategy: "append"
-
-    - type: "template"
-      name: "plan-template"
-      file: "templates/plan-addendum.md"
-      description: "Add technical decision traceability and environment assumptions"
-      strategy: "append"
-
-    - type: "template"
-      name: "tasks-template"
-      file: "templates/tasks-addendum.md"
-      description: "Add task atomicity and verification guidance"
+      description: "Prevent convergence from manufacturing work around invalid or stale upstream intent."
       strategy: "append"
 
 tags:

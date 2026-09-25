@@ -1,66 +1,41 @@
-## Reliable Development Task Rules
-
-Apply these rules in addition to the core task-generation rules.
+## Reliable Development Task Additions
 
 ### Task Atomicity
 
 Each task MUST represent one coherent implementation outcome.
 
-Split a task when it contains changes that are independently:
+Split a task when it contains changes that are independently implementable, verifiable,
+failure-prone, reviewable, or reversible.
 
-- implementable;
-- verifiable;
-- failure-prone;
-- reviewable;
-- reversible.
-
-Do not combine unrelated reasons-to-change into one task.
-
-Avoid task descriptions whose implementation would require the agent to invent substantial unstated internal subtasks.
-
-### No Repeated Design Rationale
-
-Tasks contain executable work.
-
-Reference requirements, plan decisions, contracts, or models where useful, but do not duplicate lengthy design rationale already owned by another artifact.
+Do not combine unrelated reasons to change into one task, and do not leave substantial
+unstated internal subtasks for the implementation agent to invent.
 
 ### Verification-Oriented Completion
 
-For non-trivial implementation work, make the completion condition observable.
+For non-trivial work, make the completion condition observable.
 
-A task SHOULD identify or reference the check, test, state transition, artifact, or other evidence that distinguishes:
+A task SHOULD identify or reference the test, check, state transition, artifact, or other
+evidence that distinguishes complete work from partial or non-working work.
 
-- complete;
-- partially implemented;
-- not working.
+### Failure-Path Verification
 
-Do not require a dedicated test command for trivial tasks when correctness is already self-evident.
+When a requirement covers recovery, retry, fallback, degraded mode, reconciliation, or
+self-healing, include work that causes or simulates the relevant failure condition and
+verifies the required response.
 
-### Failure Injection
-
-When a user story or requirement explicitly covers:
-
-- recovery;
-- retry;
-- fallback;
-- degraded mode;
-- reconciliation;
-- self-healing;
-
-include task coverage that causes or simulates the relevant failure condition and verifies the expected recovery behavior.
-
-Normal-path verification alone is insufficient for such requirements.
+Normal-path verification alone is insufficient for such a requirement.
 
 ### Asynchronous Readiness
 
-For asynchronous behavior, include explicit readiness, wait, or convergence conditions where required for deterministic verification.
+For asynchronous behavior, use explicit readiness, wait, or convergence conditions when
+needed for deterministic verification.
 
-Do not rely on arbitrary sleep durations when a state-based completion condition is available.
+Prefer state-based completion conditions over arbitrary sleep durations.
 
 ### Traceability
 
 Where stable identifiers exist, preserve enough references in task descriptions to recover:
 
-Requirement → significant Plan Decision → Task → Verification.
+Requirement → significant Plan Decision, when one exists → Task → Verification.
 
-Do not alter the core checklist syntax to add custom tags.
+Do not change the core task checklist syntax merely to add custom tags.
