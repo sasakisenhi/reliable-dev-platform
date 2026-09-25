@@ -1,0 +1,55 @@
+schema_version: "1.0"
+
+preset:
+  id: "reliable-dev"
+  name: "Reliable Development"
+  version: "0.1.0"
+  description: "Thin Spec Kit additions for traceability, atomic work, evidence-based completion, and upstream correction."
+  author: "local"
+
+requires:
+  speckit_version: ">=1.0.7"
+
+provides:
+  templates:
+    - type: "command"
+      name: "speckit.specify"
+      file: "commands/speckit.specify.md"
+      description: "Strengthen requirement atomicity, assumption integrity, and evidence semantics."
+      strategy: "append"
+
+    - type: "command"
+      name: "speckit.plan"
+      file: "commands/speckit.plan.md"
+      description: "Ground planning in the repository and preserve decision traceability and responsibility boundaries."
+      strategy: "append"
+
+    - type: "command"
+      name: "speckit.tasks"
+      file: "commands/speckit.tasks.md"
+      description: "Strengthen task atomicity, verification, failure-path work, and traceability."
+      strategy: "append"
+
+    - type: "command"
+      name: "speckit.analyze"
+      file: "commands/speckit.analyze.md"
+      description: "Extend analysis through verification evidence, assumptions, contract consistency, and staleness."
+      strategy: "append"
+
+    - type: "command"
+      name: "speckit.implement"
+      file: "commands/speckit.implement.md"
+      description: "Require evidence-based completion and controlled handling of upstream-origin issues."
+      strategy: "append"
+
+    - type: "command"
+      name: "speckit.converge"
+      file: "commands/speckit.converge.md"
+      description: "Prevent convergence from manufacturing work around invalid upstream intent or missing evidence."
+      strategy: "append"
+
+tags:
+  - "reliability"
+  - "traceability"
+  - "verification"
+  - "quality"
