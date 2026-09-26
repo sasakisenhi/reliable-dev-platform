@@ -1,0 +1,67 @@
+name: R1 Self-Healing Runtime
+
+on:
+  pull_request:
+  push:
+
+permissions:
+  contents: read
+
+env:
+  KIND_VERSION: v0.33.0
+  KUBECTL_VERSION: v1.37.0
+
+jobs:
+  self-healing:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install pinned kind and kubectl
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          tool_dir="${RUNNER_TEMP}/r1-bin"
+          mkdir -p "${tool_dir}"
+
+          curl --fail --location --silent --show-error \
+            --output "${RUNNER_TEMP}/kind-linux-amd64" \
+            "https://kind.sigs.k8s.io/dl/${KIND_VERSION}/kind-linux-amd64"
+          curl --fail --location --silent --show-error \
+            --output "${RUNNER_TEMP}/kind-linux-amd64.sha256sum" \
+            "https://kind.sigs.k8s.io/dl/${KIND_VERSION}/kind-linux-amd64.sha256sum"
+          (cd "${RUNNER_TEMP}" && sha256sum --check kind-linux-amd64.sha256sum)
+          install -m 0755 "${RUNNER_TEMP}/kind-linux-amd64" "${tool_dir}/kind"
+
+          curl --fail --location --silent --show-error \
+            --output "${RUNNER_TEMP}/kubectl" \
+            "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+          curl --fail --location --silent --show-error \
+            --output "${RUNNER_TEMP}/kubectl.sha256" \
+            "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl.sha256"
+          printf '%s  %s\n' "$(<"${RUNNER_TEMP}/kubectl.sha256")" "${RUNNER_TEMP}/kubectl" \
+            | sha256sum --check
+          install -m 0755 "${RUNNER_TEMP}/kubectl" "${tool_dir}/kubectl"
+
+          printf '%s\n' "${tool_dir}" >> "${GITHUB_PATH}"
+
+      - name: Verify toolchain versions
+        run: |
+          kind version
+          kubectl version --client
+          docker version
+
+      - name: Check Bash syntax
+        run: bash -n tests/e2e/self-healing.sh
+
+      - name: Run self-tests
+        run: tests/e2e/self-healing.sh --self-test
+
+      - name: Run R1 acceptance
+        run: make test-self-healing
+
+      - name: Check working tree patch
+        run: git diff --check
