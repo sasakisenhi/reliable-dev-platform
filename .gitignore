@@ -1,0 +1,14 @@
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+.vscode/
+.idea/
+
+# Local Kubernetes credentials and secrets
+*.secret.yaml
+secrets/
+.kube/
+kubeconfig*
+*.key
+*.crt

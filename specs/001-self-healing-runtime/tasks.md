@@ -23,8 +23,8 @@ description: "Implementation tasks for the Self-Healing Runtime feature"
 
 **Purpose**: Establish the feature-specific source layout and pinned local cluster definition.
 
-- [ ] T001 Create an executable Bash 5.x harness skeleton with strict mode, `--self-test` dispatch, staged `main`, and an outcome-aware cleanup trap in `tests/e2e/self-healing.sh`
-- [ ] T002 [P] Define the single-control-plane `self-healing` kind cluster using `kindest/node:v1.37.0@sha256:a1ed56cfb0e7b93589bdf97c8cd566405a265939e3620fc4f5de89adff580ae5` in `platform/kubernetes/self-healing/kind.yaml`
+- [X] T001 Create an executable Bash 5.x harness skeleton with strict mode, `--self-test` dispatch, staged `main`, and an outcome-aware cleanup trap in `tests/e2e/self-healing.sh`
+- [X] T002 [P] Define the single-control-plane `self-healing` kind cluster using `kindest/node:v1.37.0@sha256:a1ed56cfb0e7b93589bdf97c8cd566405a265939e3620fc4f5de89adff580ae5` in `platform/kubernetes/self-healing/kind.yaml`
 
 ---
 
@@ -34,10 +34,10 @@ description: "Implementation tasks for the Self-Healing Runtime feature"
 
 **Critical**: Complete this phase before either user story.
 
-- [ ] T003 Encode `VerificationFixture` inputs in `tests/e2e/self-healing.sh` with the exact invariants `namespace`: "checked-in fixture の namespace", `deploymentName`: "対象 Deployment を一意に指定", `representativeOperationPath`: "`/`", `recoveryThresholdMilliseconds`: "`120000`", `resourceSetupTimeoutSeconds`: "`60`。fixture apply 成功後に対象 Deployment と Service の取得を待つ上限。acceptance threshold には含めない", `precheckTimeoutSeconds`: "`120`。対象 resource の取得後に baseline predicate の成立を待つ上限。acceptance threshold には含めない", `lossObservationTimeoutSeconds`: "`60`。acceptance threshold には含めない", `pollIntervalSeconds`: "正数", `requestTimeoutSeconds`: "正数。単一 request が observation boundary を阻害しない値", and `serviceName`: "representative operation の対象 Service を一意に指定"
-- [ ] T004 Implement prerequisite checks for Linux, Docker, Bash 5.x, kind v0.33.0, and kubectl v1.37.0 plus cluster creation, fixture apply, bounded Deployment/Service acquisition, and outcome-aware cleanup helpers honoring `KEEP_CLUSTER=1` in `tests/e2e/self-healing.sh`, mapping apply or resource setup guard failure to `SETUP`
-- [ ] T005 Implement bounded kubectl helpers and one-snapshot Pod parsing in `tests/e2e/self-healing.sh`, deriving `podSelector` with "対象 Deployment の `.spec.selector` から導出" and `expectedInstances` with "対象 Deployment の `.spec.replicas` から取得。MVP fixture では `3`" without E2E overrides, and representing `ExecutionInstance` fields with the exact invariants `name`: "loss request の resource name", `uid`: "個体 identity", `phase`: "Kubernetes Pod phase", and `terminating`: "`deletionTimestamp` の有無から算出"
-- [ ] T006 Add success/failure outcome emitters and read-only diagnostic command helpers in `tests/e2e/self-healing.sh` with the exact `VerificationOutcome` invariants `succeeded`: "`recoveryComplete` が成立した場合だけ true", `failureStage`: "`SETUP`、`PRECHECK`、`LOSS_INJECTION`、`LOSS_OBSERVATION`、`RECOVERY_DEADLINE`、成功時 null", and `message`: "未成立条件と最後の観測値を含む", mapping success to exit 0 and failure to exit 1
+- [X] T003 Encode `VerificationFixture` inputs in `tests/e2e/self-healing.sh` with the exact invariants `namespace`: "checked-in fixture の namespace", `deploymentName`: "対象 Deployment を一意に指定", `representativeOperationPath`: "`/`", `recoveryThresholdMilliseconds`: "`120000`", `resourceSetupTimeoutSeconds`: "`60`。fixture apply 成功後に対象 Deployment と Service の取得を待つ上限。acceptance threshold には含めない", `precheckTimeoutSeconds`: "`120`。対象 resource の取得後に baseline predicate の成立を待つ上限。acceptance threshold には含めない", `lossObservationTimeoutSeconds`: "`60`。acceptance threshold には含めない", `pollIntervalSeconds`: "正数", `requestTimeoutSeconds`: "正数。単一 request が observation boundary を阻害しない値", and `serviceName`: "representative operation の対象 Service を一意に指定"
+- [X] T004 Implement prerequisite checks for Linux, Docker, Bash 5.x, kind v0.33.0, and kubectl v1.37.0 plus cluster creation, fixture apply, bounded Deployment/Service acquisition, and outcome-aware cleanup helpers honoring `KEEP_CLUSTER=1` in `tests/e2e/self-healing.sh`, mapping apply or resource setup guard failure to `SETUP`
+- [X] T005 Implement bounded kubectl helpers and one-snapshot Pod parsing in `tests/e2e/self-healing.sh`, deriving `podSelector` with "対象 Deployment の `.spec.selector` から導出" and `expectedInstances` with "対象 Deployment の `.spec.replicas` から取得。MVP fixture では `3`" without E2E overrides, and representing `ExecutionInstance` fields with the exact invariants `name`: "loss request の resource name", `uid`: "個体 identity", `phase`: "Kubernetes Pod phase", and `terminating`: "`deletionTimestamp` の有無から算出"
+- [X] T006 Add success/failure outcome emitters and read-only diagnostic command helpers in `tests/e2e/self-healing.sh` with the exact `VerificationOutcome` invariants `succeeded`: "`recoveryComplete` が成立した場合だけ true", `failureStage`: "`SETUP`、`PRECHECK`、`LOSS_INJECTION`、`LOSS_OBSERVATION`、`RECOVERY_DEADLINE`、成功時 null", and `message`: "未成立条件と最後の観測値を含む", mapping success to exit 0 and failure to exit 1
 
 **Checkpoint**: Shared inputs, lifecycle operations, snapshots, and outcome primitives are available.
 
@@ -51,15 +51,15 @@ description: "Implementation tasks for the Self-Healing Runtime feature"
 
 ### Tests for User Story 1
 
-- [ ] T007 [US1] Add initially failing fixed-input self-test cases for bounded baseline polling success before `precheckTimeoutSeconds`, expiry with resources present, selected-UID loss observation despite an unchanged total count, transient representative-operation failure followed by success, simultaneous recovery conditions, success at exactly `120000` ms, and failure at `120001` ms in `tests/e2e/self-healing.sh`
-- [ ] T008 [P] [US1] Create the `self-healing` Namespace, `apps/v1` Deployment with `.spec.replicas: 3`, stable selector labels, pinned `registry.k8s.io/e2e-test-images/agnhost:2.66.1 serve-hostname`, and ClusterIP Service exposing the representative operation in `platform/kubernetes/self-healing/workload.yaml`
+- [X] T007 [US1] Add initially failing fixed-input self-test cases for bounded baseline polling success before `precheckTimeoutSeconds`, expiry with resources present, selected-UID loss observation despite an unchanged total count, transient representative-operation failure followed by success, simultaneous recovery conditions, success at exactly `120000` ms, and failure at `120001` ms in `tests/e2e/self-healing.sh`
+- [X] T008 [P] [US1] Create the `self-healing` Namespace, `apps/v1` Deployment with `.spec.replicas: 3`, stable selector labels, pinned `registry.k8s.io/e2e-test-images/agnhost:2.66.1 serve-hostname`, and ClusterIP Service exposing the representative operation in `platform/kubernetes/self-healing/workload.yaml`
 
 ### Implementation for User Story 1
 
-- [ ] T009 [US1] After required resources exist, implement bounded baseline polling and Service-proxy `GET /` in `tests/e2e/self-healing.sh` with the exact `BaselineObservation` invariants `runningInstanceUids`: "同一 precheck cycle の Pod snapshot から算出" and `operationSucceeded`: "同一 precheck cycle の representative operation result", accepting only `size(runningInstanceUids) == expectedInstances AND operationSucceeded` in one cycle and mapping deadline expiry to `PRECHECK`
-- [ ] T010 [US1] Select and freeze one baseline Pod identity, issue exactly one `kubectl delete pod/<name> --wait=false`, and observe its absence within 60 seconds in `tests/e2e/self-healing.sh` with the exact `LossTarget` invariants `name`: "baseline の `runningInstanceUids` に対応する Pod name" and `uid`: "baseline の `runningInstanceUids` に含まれ、選択後は不変", plus `LossObservation` invariants `targetUid`: "`LossTarget.uid` と一致" and `lossObservedUptimeMilliseconds`: "canonical loss observation が成立した uptime"
-- [ ] T011 [US1] Implement the mutation-free bounded recovery loop using `/proc/uptime` in `tests/e2e/self-healing.sh` with the exact `RecoveryObservation` invariants `sequence`: "0から単調増加", `elapsedMilliseconds`: "cycle completion uptime - `lossObservedUptimeMilliseconds`", `operationSucceeded`: "cycle 内の representative operation result", `runningInstanceUids`: "cycle 内の Pod snapshot から算出", `targetUidAbsent`: "`targetUid` が `runningInstanceUids` に含まれない", and `recoveryComplete`: "下記 predicate の結果", requiring `elapsedMilliseconds <= recoveryThresholdMilliseconds`, operation success, exact expected count, and target UID absence in the same cycle
-- [ ] T012 [US1] Wire the directly executable `SETUP -> PRECHECK -> SELECT_TARGET -> INJECT_LOSS -> WAIT_TARGET_ABSENT -> OBSERVE_RECOVERY -> SUCCEEDED/FAILED -> cleanup` flow in `tests/e2e/self-healing.sh`, restrict the post-injection pre-outcome path to read-only observation plus the representative HTTP operation, honor `KEEP_CLUSTER=1` only after outcome finalization, and emit `selected pod`, `loss observed`, and `recovery complete` values
+- [X] T009 [US1] After required resources exist, implement bounded baseline polling and Service-proxy `GET /` in `tests/e2e/self-healing.sh` with the exact `BaselineObservation` invariants `runningInstanceUids`: "同一 precheck cycle の Pod snapshot から算出" and `operationSucceeded`: "同一 precheck cycle の representative operation result", accepting only `size(runningInstanceUids) == expectedInstances AND operationSucceeded` in one cycle and mapping deadline expiry to `PRECHECK`
+- [X] T010 [US1] Select and freeze one baseline Pod identity, issue exactly one `kubectl delete pod/<name> --wait=false`, and observe its absence within 60 seconds in `tests/e2e/self-healing.sh` with the exact `LossTarget` invariants `name`: "baseline の `runningInstanceUids` に対応する Pod name" and `uid`: "baseline の `runningInstanceUids` に含まれ、選択後は不変", plus `LossObservation` invariants `targetUid`: "`LossTarget.uid` と一致" and `lossObservedUptimeMilliseconds`: "canonical loss observation が成立した uptime"
+- [X] T011 [US1] Implement the mutation-free bounded recovery loop using `/proc/uptime` in `tests/e2e/self-healing.sh` with the exact `RecoveryObservation` invariants `sequence`: "0から単調増加", `elapsedMilliseconds`: "cycle completion uptime - `lossObservedUptimeMilliseconds`", `operationSucceeded`: "cycle 内の representative operation result", `runningInstanceUids`: "cycle 内の Pod snapshot から算出", `targetUidAbsent`: "`targetUid` が `runningInstanceUids` に含まれない", and `recoveryComplete`: "下記 predicate の結果", requiring `elapsedMilliseconds <= recoveryThresholdMilliseconds`, operation success, exact expected count, and target UID absence in the same cycle
+- [X] T012 [US1] Wire the directly executable `SETUP -> PRECHECK -> SELECT_TARGET -> INJECT_LOSS -> WAIT_TARGET_ABSENT -> OBSERVE_RECOVERY -> SUCCEEDED/FAILED -> cleanup` flow in `tests/e2e/self-healing.sh`, restrict the post-injection pre-outcome path to read-only observation plus the representative HTTP operation, honor `KEEP_CLUSTER=1` only after outcome finalization, and emit `selected pod`, `loss observed`, and `recovery complete` values
 
 **Checkpoint**: User Story 1 passes its fixed-input cases and the direct kind acceptance scenario without manual recovery.
 
@@ -73,13 +73,14 @@ description: "Implementation tasks for the Self-Healing Runtime feature"
 
 ### Tests for User Story 2
 
-- [ ] T013 [US2] Add initially failing fixed-input cases for exit status and unmet-condition messages at `SETUP` including resource setup guard expiry, `PRECHECK` including baseline guard expiry with resources present, `LOSS_INJECTION`, `LOSS_OBSERVATION`, and `RECOVERY_DEADLINE`, plus cleanup behavior for default and `KEEP_CLUSTER=1`, in `tests/e2e/self-healing.sh`
-- [ ] T014 [P] [US2] Add the phony `test-self-healing` target in `Makefile` as the primary user-facing acceptance entrypoint, invoking `tests/e2e/self-healing.sh`
+- [X] T013 [US2] Add initially failing fixed-input cases for exit status and unmet-condition messages at `SETUP` including resource setup guard expiry, `PRECHECK` including baseline guard expiry with resources present, `LOSS_INJECTION`, `LOSS_OBSERVATION`, and `RECOVERY_DEADLINE`, plus cleanup behavior for default and `KEEP_CLUSTER=1`, in `tests/e2e/self-healing.sh`
+- [X] T014 [P] [US2] Add the phony `test-self-healing` target in `Makefile` as the primary user-facing acceptance entrypoint, invoking `tests/e2e/self-healing.sh`
+
 ### Implementation for User Story 2
 
-- [ ] T015 [US2] Route prerequisite/cluster/apply/resource acquisition failures to `SETUP`, bounded baseline expiry after resources exist to `PRECHECK`, delete-request failures to `LOSS_INJECTION`, absent-UID guard expiry to `LOSS_OBSERVATION`, and incomplete same-cycle recovery by the inclusive deadline to `RECOVERY_DEADLINE` in `tests/e2e/self-healing.sh`
-- [ ] T016 [US2] On failure, print the stage, unmet predicate, last observed count/operation/UID/elapsed values, and read-only Deployment, ReplicaSet, Pod, and Event diagnostics without masking the original exit status in `tests/e2e/self-healing.sh`
-- [ ] T017 [US2] Complete the fixed-input `--self-test` runner, assert exit code 0 for its positive case and exit code 1 plus the expected stage / unmet-condition message for at least one case per non-null `VerificationOutcome.failureStage` value, and prevent all external cluster mutations in self-test mode in `tests/e2e/self-healing.sh`
+- [X] T015 [US2] Route prerequisite/cluster/apply/resource acquisition failures to `SETUP`, bounded baseline expiry after resources exist to `PRECHECK`, delete-request failures to `LOSS_INJECTION`, absent-UID guard expiry to `LOSS_OBSERVATION`, and incomplete same-cycle recovery by the inclusive deadline to `RECOVERY_DEADLINE` in `tests/e2e/self-healing.sh`
+- [X] T016 [US2] On failure, print the stage, unmet predicate, last observed count/operation/UID/elapsed values, and read-only Deployment, ReplicaSet, Pod, and Event diagnostics without masking the original exit status in `tests/e2e/self-healing.sh`
+- [X] T017 [US2] Complete the fixed-input `--self-test` runner, assert exit code 0 for its positive case and exit code 1 plus the expected stage / unmet-condition message for at least one case per non-null `VerificationOutcome.failureStage` value, and prevent all external cluster mutations in self-test mode in `tests/e2e/self-healing.sh`
 
 **Checkpoint**: User Story 2 provides a deterministic self-test surface and a single automated acceptance command with actionable failures.
 
@@ -89,10 +90,10 @@ description: "Implementation tasks for the Self-Healing Runtime feature"
 
 **Purpose**: Validate the complete feature against its documented quality gates and mutation boundary.
 
-- [ ] T018 Audit the post-injection pre-outcome command path for forbidden scale, rollout restart, replacement creation, additional delete, or other recovery-promoting mutations and record any explanatory comments beside that path in `tests/e2e/self-healing.sh`
-- [ ] T019 Run `bash -n tests/e2e/self-healing.sh` and resolve every syntax failure in `tests/e2e/self-healing.sh`
-- [ ] T020 Run `tests/e2e/self-healing.sh --self-test` and resolve every predicate, inclusive-boundary, stage-mapping, exit-status, and cleanup regression in `tests/e2e/self-healing.sh`
-- [ ] T021 Execute both `tests/e2e/self-healing.sh` and `make test-self-healing` on the pinned Linux + Docker environment and verify equivalent success output, the `0..120000ms` elapsed bound, exit status, and cleanup/retention instructions against `specs/001-self-healing-runtime/quickstart.md`
+- [X] T018 Audit the post-injection pre-outcome command path for forbidden scale, rollout restart, replacement creation, additional delete, or other recovery-promoting mutations and record any explanatory comments beside that path in `tests/e2e/self-healing.sh`
+- [X] T019 Run `bash -n tests/e2e/self-healing.sh` and resolve every syntax failure in `tests/e2e/self-healing.sh`
+- [X] T020 Run `tests/e2e/self-healing.sh --self-test` and resolve every predicate, inclusive-boundary, stage-mapping, exit-status, and cleanup regression in `tests/e2e/self-healing.sh`
+- [X] T021 Execute both `tests/e2e/self-healing.sh` and `make test-self-healing` on the pinned Linux + Docker environment and verify equivalent success output, the `0..120000ms` elapsed bound, exit status, and cleanup/retention instructions against `specs/001-self-healing-runtime/quickstart.md`
 
 ---
 
@@ -169,7 +170,7 @@ Task T014: Add the acceptance target in Makefile
 
 1. Complete Setup and Foundational sequentially where tasks share `tests/e2e/self-healing.sh`.
 2. In US1, implement the fixed-input cases and Kubernetes workload manifest in parallel, then finish the script flow sequentially.
-3. In US2, implement failure self-tests and the Make target in parallel, then finish stage diagnostics and orchestration sequentially.
+3. In US2, implement failure self-tests and the Make target in parallel, then finish stage diagnostics and the fixed-input self-test runner sequentially.
 
 ---
 
