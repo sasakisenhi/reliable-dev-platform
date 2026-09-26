@@ -18,7 +18,7 @@ Kubernetes 標準 reconciliation による単一 Pod 喪失からの復旧を、
 
 **Testing**: `bash -n`、E2E script の `--self-test`、単一ノード kind 上の acceptance scenario
 
-**Target Platform**: Linux 上の Docker 互換 runtime を利用するローカル環境または CI
+**Target Platform**: Linux 上の Docker を利用するローカル環境または CI
 
 **Project Type**: Kubernetes manifests + feature-specific E2E script
 
@@ -56,8 +56,8 @@ Pod identity、`RunningInstanceSet`、loss injection、representative operation�
 
 ## E2E Control Flow
 
-1. pinned environment を確認し、kind cluster と fixture を setup する。
-2. 対象 Deployment から selector と expected count を取得し、canonical observation semantics で baseline を確認する。
+1. pinned Linux + Docker environment を確認し、kind cluster と fixture を setup する。apply 失敗、または bounded resource setup guard 内に対象 Deployment と Service を取得できない場合は `SETUP` failure とする。
+2. 対象 resource の取得後、Deployment から selector と expected count を取得し、bounded precheck guard 内で canonical baseline predicate を polling する。期限までに baseline が成立しない場合は `PRECHECK` failure とする。
 3. loss target の name / UID を固定し、canonical loss injection を1回だけ実行する。
 4. loss observation guard と recovery deadline の範囲で bounded observation を行う。
 5. [data-model.md](./data-model.md) の predicate により outcome を確定する。
@@ -68,6 +68,7 @@ Pod identity、`RunningInstanceSet`、loss injection、representative operation�
 ## Diagnostics and Interface
 
 - `make test-self-healing`: cluster setup から cleanup までの acceptance scenario を実行する。
+- `tests/e2e/self-healing.sh`: Make wrapper を介さず、同じ setup から cleanup までの acceptance scenario を直接実行する。
 - `tests/e2e/self-healing.sh --self-test`: completion predicate、120秒 inclusive boundary、各 failure stage の固定入力 test を実行する。
 - success: exit code 0。選択 UID、loss observation、recovery elapsed time を表示する。
 - failure: exit code 1。`SETUP`、`PRECHECK`、`LOSS_INJECTION`、`LOSS_OBSERVATION`、`RECOVERY_DEADLINE` の stage と未成立条件を表示する。
@@ -89,9 +90,9 @@ Pod identity、`RunningInstanceSet`、loss injection、representative operation�
 
 | Success Criterion | Verification |
 |---|---|
-| SC-001 | kind E2E で canonical recovery completion を deadline 内に確認 |
-| SC-002 | injection 後の mutation-free path だけで outcome へ到達することを確認 |
-| SC-003 | positive E2E と全 failure-stage self-tests で exit status と診断を確認 |
+| SC-001 | positive kind E2E で exit code 0と `0..120000ms` の recovery elapsed output を確認 |
+| SC-002 | injection 後から outcome 確定までの command path review で recovery mutation と Developer recovery input が0件であることを確認 |
+| SC-003 | positive E2E 1件の exit code 0と、`VerificationOutcome.failureStage` の各 non-null 値につき1件以上の固定入力 case の exit code 1および期待 stage / 未成立条件の診断を確認 |
 
 ## Project Structure
 

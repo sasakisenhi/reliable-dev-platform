@@ -95,6 +95,20 @@
 
 ## 6. Loss observation and recovery deadline
 
+### Fixture setup and baseline precheck bounds
+
+**Decision**: fixture apply が失敗した場合は `SETUP` とする。apply 成功後は [data-model.md](./data-model.md) の `resourceSetupTimeoutSeconds` 内で対象 Deployment と Service の取得を待ち、期限までに必要 resource を取得できなければ `SETUP` とする。必要 resource を取得した後は `precheckTimeoutSeconds` 内で baseline predicate を bounded polling し、resource は存在するが期限までに predicate が成立しなければ `PRECHECK` とする。どちらの guard も120秒の recovery acceptance threshold には含めない。
+
+**Rationale**: Kubernetes resource の作成と Pod / Service の利用可能化は非同期である。resource existence と正常な baseline を別の bounded guard で扱うことで、apply 直後の一時状態による false failure と無期限 wait を避け、failure stage を再現可能にする。
+
+**Alternatives considered**:
+
+- apply 直後の one-shot baseline check: 非同期 reconciliation の途中状態を `PRECHECK` failure と誤判定し得る。
+- timeout なしの wait: automated E2E が終了しない可能性がある。
+- resource absence を `PRECHECK` とする: fixture を準備できない `SETUP` failure と、準備済み resource の不健全状態を区別できない。
+
+### Loss observation and recovery completion
+
 **Decision**: delete request 後60秒の scenario guard 内で、選択 UID が `RunningInstanceSet` から最初に外れた観測を待つ。その観測時の uptime を 120秒 timer を開始する。delete request 時刻、Pod object の完全削除、総実行数の減少は timer origin にしない。
 
 loss observation 後は bounded observation cycle を繰り返す。同一 cycle 内で、実行数が期待実行数と一致し、代表操作が成功し、選択 UID が不在であることを確認する。cycle 完了時の elapsed time が120,000ms以下なら recovery completion とする。
@@ -115,7 +129,7 @@ loss observation 後は bounded observation cycle を繰り返す。同一 cycle
 
 ## 7. Reproducible environment and version pinning
 
-**Decision**: kind v0.33.0、同 release の `kindest/node:v1.37.0@sha256:a1ed56cfb0e7b93589bdf97c8cd566405a265939e3620fc4f5de89adff580ae5`、kubectl v1.37.0、agnhost 2.66.1を固定する。cluster は単一 node とする。
+**Decision**: R1 の host environment は Linux 上の Docker とする。kind v0.33.0、同 release の `kindest/node:v1.37.0@sha256:a1ed56cfb0e7b93589bdf97c8cd566405a265939e3620fc4f5de89adff580ae5`、kubectl v1.37.0、agnhost 2.66.1を固定する。cluster は単一 node とする。
 
 **Rationale**: kind は CI で stable tagged release を推奨し、node image は同じ kind release が公開した digest の利用を案内している。単一 node は Pod loss と node failure を混同しない。
 
@@ -123,6 +137,7 @@ loss observation 後は bounded observation cycle を繰り返す。同一 cycle
 
 - floating latest / default image: CI behavior が時間とともに変わる。
 - multi-node kind: node failure という scope 外の変数を追加する。
+- Docker 以外の container runtime: R1 では compatibility を検証せず、runtime scope を拡大しない。
 
 **Sources**:
 

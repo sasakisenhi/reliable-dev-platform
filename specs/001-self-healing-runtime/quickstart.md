@@ -5,11 +5,11 @@
 ## Prerequisites
 
 - Linux
-- Docker 互換 container runtime
+- Docker
 - Bash 5.x
 - kind v0.33.0
 - kubectl v1.37.0
-- Make
+- Make（Make wrapper を使用する場合）
 
 完全な version set は [research.md §7](./research.md#7-reproducible-environment-and-version-pinning) に固定する。Kubernetes node image は`platform/kubernetes/self-healing/kind.yaml` に反映する。
 
@@ -33,11 +33,19 @@ Expected: すべての case が成功し、exit code 0。
 
 ## Run the acceptance scenario
 
+direct E2E script:
+
+```bash
+tests/e2e/self-healing.sh
+```
+
+primary Make wrapper:
+
 ```bash
 make test-self-healing
 ```
 
-この command は pinned kind cluster の setup、MVP fixture の apply、acceptance scenario の実行、outcome と診断の出力、fixture cleanup を行う。内部 stage と制約は [plan.md §E2E Control Flow](./plan.md#e2e-control-flow) を参照する。
+どちらの command も pinned kind cluster の setup、MVP fixture の apply、bounded resource setup / baseline precheck、acceptance scenario の実行、outcome と診断の出力、fixture cleanup を行う。内部 stage と制約は [plan.md §E2E Control Flow](./plan.md#e2e-control-flow) を参照する。
 
 成功時の出力には少なくとも次が含まれる。
 
@@ -55,8 +63,8 @@ recovery complete: instances=<expected-count> operation=success elapsed=<0..1200
 
 | Stage | Meaning |
 |---|---|
-| `SETUP` | 必須 tool、cluster、fixture、または対象 resource を準備できない |
-| `PRECHECK` | 正常な初期状態を確認できない |
+| `SETUP` | 必須 tool、cluster、fixture apply、または resource setup guard 内の対象 resource 取得を完了できない |
+| `PRECHECK` | 対象 resource は存在するが、bounded precheck 内に正常な初期状態を確認できない |
 | `LOSS_INJECTION` | 選択した loss target への単一 loss request を完了できない |
 | `LOSS_OBSERVATION` | scenario guard 内に選択 instance の喪失を確認できない |
 | `RECOVERY_DEADLINE` | acceptance deadline 内に recovery completion を確認できない |

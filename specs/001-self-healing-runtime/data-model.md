@@ -12,6 +12,8 @@
 | `expectedInstances` | integer | 対象 Deployment の `.spec.replicas` から取得。MVP fixture では `3` |
 | `representativeOperationPath` | string | `/` |
 | `recoveryThresholdMilliseconds` | integer | `120000` |
+| `resourceSetupTimeoutSeconds` | integer | `60`。fixture apply 成功後に対象 Deployment と Service の取得を待つ上限。acceptance threshold には含めない |
+| `precheckTimeoutSeconds` | integer | `120`。対象 resource の取得後に baseline predicate の成立を待つ上限。acceptance threshold には含めない |
 | `lossObservationTimeoutSeconds` | integer | `60`。acceptance threshold には含めない |
 | `pollIntervalSeconds` | integer | 正数 |
 | `requestTimeoutSeconds` | integer | 正数。単一 request が observation boundary を阻害しない値 |
@@ -127,3 +129,6 @@ OBSERVE_RECOVERY --> FAILED(RECOVERY_DEADLINE)
 ```
 
 State transition 中の許可 operation と cleanup boundary は [plan.md §E2E Control Flow](./plan.md#e2e-control-flow) に従う。
+
+- fixture apply が失敗した場合、または `resourceSetupTimeoutSeconds` 内に対象 Deployment と Service を取得できない場合は `FAILED(SETUP)` とする。
+- 対象 resource の取得後、`precheckTimeoutSeconds` 内に baseline predicate が成立しない場合は `FAILED(PRECHECK)` とする。

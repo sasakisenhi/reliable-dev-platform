@@ -1,10 +1,10 @@
 # Feature Specification: Self-Healing Runtime
 
-**Feature Branch**: `001-self-healing`
+**Feature Branch**: `001-self-healing-runtime`
 
 **Created**: 2026-09-17
 
-**Status**: Ready for Planning
+**Status**: Ready for Implementation
 
 **Parent Roadmap**: `ROADMAP.md` R1
 
@@ -92,12 +92,13 @@ Platform QA として、この Feature の受け入れシナリオを自動実�
 
 ### Measurable Outcomes
 
-- **SC-001**: 正常状態から選択した実行インスタンスの喪失を最初に観測してから120秒以内に、現在実行数と期待実行数の正確な一致、および代表的な利用操作の成功が同時に確認される。
-- **SC-002**: 単一喪失の注入後、追加の手動復旧手順またはDeveloper入力を実行することなく、FR-006の復旧完了条件が成立する。
-- **SC-003**: Feature 固有の自動 E2E 検証は、正常状態から復旧完了までの受け入れ条件をすべて満たした実行の100%で成功し、いずれかを確認できない実行の100%で成功せず、確認できなかった条件を診断情報として示す。
+- **SC-001**: MVP fixture を使用する positive E2E acceptance case は、選択した実行インスタンスの喪失観測を起点とする `0..120000ms` の recovery elapsed time を報告し、期待実行数 `3` と代表的な利用操作の成功が同一観測 cycle で成立した場合に exit code `0` となる。
+- **SC-002**: 単一喪失の注入後から outcome 確定までの command path review において、復旧を促進する mutation と Developer による復旧入力または復旧操作がともに `0` 件である。
+- **SC-003**: Feature 固有の自動検証は、User Story 2 の positive E2E acceptance case `1` 件と、[data-model.md](./data-model.md) の `VerificationOutcome.failureStage` の各 non-null 値につき `1` 件以上の固定入力 case からなる有限の test set を実行し、positive case は exit code `0`、各 failure case は exit code `1` と期待する stage / 未成立条件の診断に一致する。
 
 ## Assumptions
 
 - MVP では期待実行数の検証入力として3を使用する。3は Platform の固定 Requirement ではない。
 - 対象アプリケーションは複数の同等な実行インスタンスで動作でき、利用可能性を確認する代表的な操作を持つ。
 - 対象環境には期待実行数を満たすための容量がある。
+- R1 の検証環境は Linux host 上の Docker を使用する。
