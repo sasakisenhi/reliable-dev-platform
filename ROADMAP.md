@@ -1,7 +1,7 @@
 # Reliable Development Platform Roadmap
 
 ## R1 — Self-Healing Runtime
-Status: In Progress
+Status: Completed
 
 Intent:
 単一実行インスタンス喪失後、Developerによる復旧操作を必要とせず、
